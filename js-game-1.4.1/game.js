@@ -12,7 +12,7 @@ class Vector {
 	// сложение координат
         if (!(vectorObj instanceof Vector)) {
             throw new Error("Можно прибавлять к вектору только вектор типа Vector");
-        }   
+        } 
         return new Vector(vectorObj.x + this.x, vectorObj.y + this.y)
     }
 	
@@ -33,19 +33,17 @@ class Actor {
 		this.pos = pos;  // позиция
 		this.size = size;  // размер
 		this.speed = speed;  // скорость
-		this.type = 'actor';  // тип объекта
-		this.left = pos.x;  // координы левой грани
-		this.top = pos.y;  // координы верхней грани
-		this.right = pos.x + size.x;  // координы правой грани
-		this.bottom = pos.y + size.y;  // координы нижней грани
-		
-		// свойства - только для чтения 
-		Object.defineProperty(this, 'type', {writable: false});
-		Object.defineProperty(this, 'left', {writable: false});
-		Object.defineProperty(this, 'top', {writable: false});
-		Object.defineProperty(this, 'right', {writable: false});
-		Object.defineProperty(this, 'bottom', {writable: false});		
+		this._type = 'actor';  // тип объекта
+		Object.defineProperty(this, '_type', {writable: false});
 	}
+	
+	get type() {return this._type;}  // получение типа обьекта
+	set type(newType) {this._type = newType;}  // смена типа обьекта
+	
+	get left() {return this.pos.x;}  // левый край
+	get top() {return this.pos.y;}  // верхний край
+	get right() {return this.pos.x + this.size.x;}  // правый край
+	get bottom() {return this.pos.y + this.size.y;}  // нижний край
 	
 	act() { 
 	// пустой метод 
@@ -73,22 +71,15 @@ class Actor {
 		*/
 
 		// проверка пересечения с самим собой
-		if (actorObj == this) {
-			return false;
-        }
+		if (actorObj == this) {return false;}
 		
 		// пересечения обьектов (смежные границы не являются пересечением)
-		if(!(this.top + 1 > actorObj.bottom || this.bottom - 1 < actorObj.top || this.right - 1 < actorObj.left || this.left + 1 > actorObj.right)) {
-			return true;
-		}
-		
-		// обект внутри
-		if((this.left > actorObj.left && this.right > actorObj.right) && (this.top > actorObj.top && this.bottom > actorObj.bottom)) {
+		if(!(this.top + 0.1 > actorObj.bottom || this.bottom - 0.1 < actorObj.top || this.right - 0.1 < actorObj.left || this.left + 0.1 > actorObj.right)) {
 			return true;
 		}
 		
 		// нет пересечений
-		else return false;
+		else {return false;}
 	}	
 	
 }
@@ -96,8 +87,8 @@ class Actor {
 class Level {
 // класс реализует схему игрового поля конкретного уровня, контролирует все движущиеся объекты на нём и реализует логику игры. Уровень представляет собой координатное поле, имеющее фиксированную ширину и высоту
 	constructor(grid = 0, actors = 0) {
-		this.grid = grid;
-		this.actors = actors;
+		this.grid = grid;  // сетка уровня 
+		this.actors = actors;  // объекты уровня
 		
 		for(let actor in this.actors) {
 			if(this.actors[actor].type == 'player') {
@@ -105,17 +96,17 @@ class Level {
 			}
 		}
 		
-		this.heigth = this.grid.length;	
-
-		this.width = 0;	
+		this.grid.length ? this.height = this.grid.length : this.height = 0;   // высота игрового поля уровня
+		
+		this.width = 0;  // ширина игрового поля уровня
 		for(let x in this.grid) {
 			if(this.grid[x].length > this.width) {
 				this.width = this.grid[x].length;
 			}
 		}
 
-		this.status = null;
-		this.finishDelay = 1;
+		this.status = null;  //  статус уровня
+		this.finishDelay = 1;  // пауза при завершении уровня
 	}
 	
 	isFinished() {
@@ -135,9 +126,7 @@ class Level {
 			
 		// проверка пересечений с обьектами
 		for(let actor in this.actors) {
-			//console.log(actorObj.isIntersect(this.actors[actor]));
 			if(actorObj.isIntersect(this.actors[actor])) {
-				//console.log(this.actors[actor]);
 				return this.actors[actor]
 			}
 		}		
@@ -151,28 +140,20 @@ class Level {
             throw new Error("Нужно передавать только обьект типа Vector");
         }
 		
-		// создание временного обьекта из переданных векторов 
+		// создание временного обьекта из переданных векторов 	
 		let actorObj = new Actor(vectorPos, vectorSize, new Vector());
-
 		
 		// пересечение с лавой
 		if(actorObj.bottom > this.height) {
 			return 'lava';
 		}
-		
+	
 		// пересечение со стеной
-		if(actorObj.left < 1 || actorObj.right > this.width || actorObj.top < 1) {
+		if(actorObj.left < 0.0 || actorObj.right > this.width || actorObj.top < 0.0) {
 			return 'wall';
 		}
 		
-		// пересечение с обьектом
-		let obstacleObj = this.actorAt(actorObj);
-		if(obstacleObj == undefined) {
-			return undefined;
-		}
-		else {
-			return obstacleObj.type;
-		}
+		if(this.status != 'lost') {return this.grid[Math.round(vectorPos.y)][Math.round(vectorPos.x)];}
 		
 	}
 	
@@ -197,9 +178,7 @@ class Level {
 	
 	playerTouched(actorType, actorObj = 0) {
 	// меняет состояние игрового поля при касании игроком каких-либо объектов или препятствий
-		if(this.status != null) {
-			return false;
-		}
+		if(this.status != null) {return;}
 		
 		// завершение игры
 		if(actorType == 'lava' || actorType == 'fireball') {
@@ -265,12 +244,12 @@ class LevelParser {
 			for(let x = 0; x < planLevel[y].length; x++) {  // перебор ячеек плана уровня (x)	
 				let actorObjGrid;	
 			
-				let actorObj = this.actorFromSymbol(planLevel[y][x]);
-				if(actorObj == undefined) {continue;}  // если в словаре undefined, то пропускаем
+				let actorObj = this.actorFromSymbol(planLevel[y][x]);				
+				if((typeof actorObj) != 'function') {continue;}  // если в не функция, то пропускаем
 				
 				// создание обьекта			
 				actorObjGrid = new actorObj(new Vector(parseInt(x), parseInt(y)));  // создание обьекта с координатами
-				
+								
 				if(!(actorObjGrid instanceof Actor)) {continue;}  // если обьект не потомок Actor, то пропускаем	
 				actors.push(actorObjGrid);  // добавляем в массив
 			}
@@ -288,7 +267,7 @@ class LevelParser {
 class Fireball extends Actor {
 // шаровая молния. Прототип для движущихся опасностей на игровом поле
 	constructor(pos = 0, speed = 0) {
-		super(pos? pos: new Vector(3,1), new Vector(1, 1), speed? speed: new Vector(1,0));
+		super(pos? pos: new Vector(), new Vector(1,1), speed? speed: new Vector(1,0));
 		Object.defineProperty(this, 'type', {writable: true});
 		this.type = 'fireball';
 		Object.defineProperty(this, 'type', {writable: false});
@@ -307,10 +286,10 @@ class Fireball extends Actor {
 	act(time, level) {
 	// обновляет состояние движущегося объекта
 		let newPos = this.getNextPosition(time);  // получение следующей позиции
-		
+
 		// пролверка пересечения с каким либо преаятствием
 		if(level.obstacleAt(newPos, this.size) == undefined) {
-			this.pos.plus(newPos);  // если нет препятствия, обновить текущую позицию объекта
+			this.pos = newPos;  // если нет препятствия, обновить текущую позицию объекта
 		} 
 		else {
 			this.handleObstacle();  // если есть, оттолкнуться
@@ -321,7 +300,7 @@ class Fireball extends Actor {
 class HorizontalFireball extends Fireball {
 // горизонтальная шаровая молния
 	constructor(pos = 0, speed = 0) {
-		super(pos? pos: new Vector(), new Vector(1, 1), speed? speed: new Vector(2,0));
+		super(pos? pos: new Vector(), speed? speed: new Vector(2,0), new Vector(1,1));
 	}
 	
 	getNextPosition(time = 2) {
@@ -333,7 +312,7 @@ class HorizontalFireball extends Fireball {
 class VerticalFireball extends Fireball {
 // гвертикальная шаровая молния
 	constructor(pos = 0, speed = 0) {
-		super(pos? pos: new Vector(), new Vector(1, 1), speed? speed: new Vector(0,2));
+		super(pos? pos: new Vector(), speed? speed: new Vector(0,2), new Vector(1, 1));
 	}
 	
 	getNextPosition(time = 2) {
@@ -345,7 +324,7 @@ class VerticalFireball extends Fireball {
 class FireRain extends Fireball {
 // огненный дождь. Движется по вертикали со скоростью `3` и при столкновении с препятствием начинает движение в том же направлении из исходного положения, которое задано при создании.
 	constructor(pos = 0, speed = 0) {
-		super(pos? pos: new Vector(), new Vector(1, 1), speed? speed: new Vector(0,1));
+		super(pos? pos: new Vector(), speed? speed: new Vector(0,3), new Vector(1, 1));
 		this.posSave = this.pos;
 	}
 	
@@ -365,7 +344,7 @@ class Coin extends Actor {
 	constructor(pos) {
 		super(pos, new Vector(0.6, 0.6), new Vector(0,0));
 		this.pos = this.pos.plus(new Vector(0.2, 0.1));
-		this.posBase = this.pos.plus(new Vector(0.2, 0.1));
+		this.posBase = this.pos;
 		Object.defineProperty(this, 'type', {writable: true});
 		this.type = 'coin'; 
 		Object.defineProperty(this, 'type', {writable: true});
@@ -376,23 +355,23 @@ class Coin extends Actor {
 	
 	updateSpring(time = 1){
 	// обновляет фазу подпрыгивания. Это функция времени
-		this.spring = this.springSpeed * time;
+		this.spring = this.spring + (this.springSpeed * time);
 	}
 	
 	getSpringVector() {
 	// создает и возвращает вектор подпрыгивания
-		return new Vector(0, Math.sin(this.spring * this.springDist));
+		return new Vector(0, Math.sin(this.spring) * this.springDist);
 	}
 	
 	getNextPosition(time = 1) {
 	// обновляет текущую фазу, создает и возвращает вектор новой позиции монетки
-		let nextPos = this.posBase.plus(this.getSpringVector());
-		return nextPos;
+		this.updateSpring(time)
+		return this.posBase.plus(this.getSpringVector());
 	}
 	
 	act(time) {
 	// получает новую позицию объекта и задает её как текущую
-		this.pos = this.getNextPosition();
+		this.pos = this.getNextPosition(time);
 	}
 }
 
@@ -400,40 +379,51 @@ class Player extends Actor {
 // представляет игрока на игровом поле
 		constructor(pos) {
 			super(pos, new Vector(0.8, 1.5), new Vector(0,0));
-			this.pos = this.pos.plus(new Vector(0.2, 0.1));
+			this.pos = this.pos.plus(new Vector(0.0, -0.5));
 			Object.defineProperty(this, 'type', {writable: true});
 			this.type = 'player'; 
 			Object.defineProperty(this, 'type', {writable: true});
-		}
-		
+		}	
 }
 
 const schemas = [
   [
-    '         ',
-    '         ',
-    '    =    ',
-    '       o ',
-    '     !xxx',
-    ' @o      ',
-    'xxx!     ',
-    '         '
+    '      = o   ',
+    ' o    xxx!! ',
+    ' |    o   v ',
+    '      xxx   ',
+    ' xx x       ',
+    '  @        o',
+    'xxxxxx xxxxx',
+    '            '
   ],
   [
-    '      v  ',
-    '    v    ',
-    '  v      ',
-    '        o',
-    '        x',
-    '@   x    ',
-    'x        ',
-    '         '
+    '      v    |',
+    '   xv       ',
+    '  v  o      ',
+    ' x   x   o  ',
+    '         x  ',
+    '@   x      o',
+    'xx         x',
+    '            '
+  ],
+  [
+    '   |   o      v    = ',
+    '     xxx!      o  x! ',
+    '        v    o     v ',
+    '     o           o   ',
+    '     x       x   x   ',
+    '@          x      o= ',
+    'xx               xx  ',
+    '        x            '
   ]
 ];
+
 const actorDict = {
   '@': Player,
   'v': FireRain,
   '=': HorizontalFireball,
+  '|': VerticalFireball,
   'o': Coin
 }
 const parser = new LevelParser(actorDict);
