@@ -161,7 +161,7 @@ class Level {
 			//let bRaw = actorObj.bottom;
 			
 			let lRnd = Math.floor(actorObj.left + 0.01);
-			let tRnd = Math.round(actorObj.top);
+			let tRnd = Math.ceil(actorObj.top - 0.8);
 			let rRnd = Math.floor(actorObj.right - 0.01);
 			let bRnd = Math.floor(actorObj.bottom - 0.01);
 			
@@ -170,30 +170,38 @@ class Level {
 			let rb = this.grid[bRnd][rRnd];
 			let lb = this.grid[bRnd][lRnd];
 			
+			let lc = this.grid[Math.round(tRnd + ((bRnd - tRnd)/2))][lRnd];
+			let rc = this.grid[Math.round(tRnd + ((bRnd - tRnd)/2))][rRnd];
+		
 			/*
 			//console.log(this.grid);
-			//console.log(this.player);
-			//console.log(actorObj);
+			console.log(this.player);
+			console.log(actorObj);
 			console.log('pos:', vectorPos, 'size:', vectorSize);
 			
-			//console.log('top raw:', tRaw, 'top rnd:', tRnd); 
-			//console.log('left raw:', lRaw, 'left rnd:', lRnd);
-			//console.log('bottom raw:', bRaw, 'bottom rnd:', bRnd);
-			//console.log('right raw:', rRaw, 'right rnd:', rRnd);
+			console.log('top raw:', tRaw, 'top rnd:', tRnd); 
+			console.log('left raw:', lRaw, 'left rnd:', lRnd);
+			console.log('bottom raw:', bRaw, 'bottom rnd:', bRnd);
+			console.log('right raw:', rRaw, 'right rnd:', rRnd);
+			
+			//console.log('left center:', tRnd + ((bRnd - tRnd)/2));
+			//console.log('left center:', tRnd + ((bRnd - tRnd)/2));
 			
 			console.log('grid: left-top:', lt);
 			console.log('grid: right-top:', rt);			
 			console.log('grid: right-bottom:', rb);
 			console.log('grid: left-bottom:', lb);
+			
+			console.log('grid left center:', lc);
+			console.log('grid left center:', rc);
 			*/
 			
 			if (lt == 'lava' || rb == 'lava' || rt == 'lava' || lb == 'lava') {
 				return 'lava';
 			}
-			else if(lt == 'wall' || rb == 'wall' || rt == 'wall' || lb == 'wall') {
+			else if(lt == 'wall' || rb == 'wall' || rt == 'wall' || lb == 'wall' || lc == 'wall' || rc == 'wall') {
 				return 'wall';
 			}
-
 			else {
 				return undefined
 			}
@@ -421,13 +429,18 @@ class Coin extends Actor {
 
 class Player extends Actor {
 // представляет игрока на игровом поле
-		constructor(pos) {
-			super(pos, new Vector(0.8, 1.5), new Vector(0,0));
-			this.pos = this.pos.plus(new Vector(0.0, -0.5));
-			Object.defineProperty(this, 'type', {writable: true});
-			this.type = 'player'; 
-			Object.defineProperty(this, 'type', {writable: true});
-		}	
+	constructor(pos) {
+		super(pos, new Vector(0.8, 1.5), new Vector(0,0));
+		this.pos = this.pos.plus(new Vector(0.0, -0.5));
+		Object.defineProperty(this, 'type', {writable: true});
+		this.type = 'player'; 
+		Object.defineProperty(this, 'type', {writable: true});
+	}
+	
+	act(time = 1) {
+		let v = new Vector(x,y);
+		this.pos = this.pos.plus.times(time); 
+	}
 }
 /*
 //bottom wall
@@ -472,7 +485,7 @@ const nothing = level.obstacleAt(position, size);
 const schema = [
   '         ',
   '         ',
-  '   @ x!x ',
+  'xx @xxxxx',
   '         ',
   '       ! ',
   '    x    ',
@@ -485,7 +498,7 @@ const actorDict = {
 const parser = new LevelParser(actorDict);
 const level = parser.parse(schema);
 runLevel(level, DOMDisplay);
-*/
+
 
 
 /*
@@ -505,7 +518,6 @@ const schemas = [
 	]
   ];
 */
-
 
 const schemas = [
   [
@@ -554,3 +566,4 @@ const actorDict = {
 const parser = new LevelParser(actorDict);
 runGame(schemas, parser, DOMDisplay)
   .then(() => console.log('Вы выиграли приз!'));
+//*/
