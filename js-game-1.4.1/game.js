@@ -436,11 +436,6 @@ class Player extends Actor {
 		this.type = 'player'; 
 		Object.defineProperty(this, 'type', {writable: true});
 	}
-	
-	act(time = 1) {
-		let v = new Vector(x,y);
-		this.pos = this.pos.plus.times(time); 
-	}
 }
 /*
 //bottom wall
