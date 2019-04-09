@@ -155,52 +155,24 @@ class Level {
 		
 		if(this.status != 'lost') {
 			
-			//let lRaw = actorObj.left;
-			//let tRaw = actorObj.top;
-			//let rRaw = actorObj.right;
-			//let bRaw = actorObj.bottom;
+			let lRnd = Math.floor(actorObj.left + 0.01);  // левая сторона
+			let tRnd = Math.ceil(actorObj.top - 0.8);  // верхняя сторона
+			let rRnd = Math.floor(actorObj.right - 0.01);  // правая сторона
+			let bRnd = Math.floor(actorObj.bottom - 0.01);  // нижняя сторона
 			
-			let lRnd = Math.floor(actorObj.left + 0.01);
-			let tRnd = Math.ceil(actorObj.top - 0.8);
-			let rRnd = Math.floor(actorObj.right - 0.01);
-			let bRnd = Math.floor(actorObj.bottom - 0.01);
+			let lt = this.grid[tRnd][lRnd];  // левый верхний угол
+			let rt = this.grid[tRnd][rRnd];  // правый верхний угол
+			let rb = this.grid[bRnd][rRnd];  // правый нижний угол
+			let lb = this.grid[bRnd][lRnd];  // левый нижний угол
 			
-			let lt = this.grid[tRnd][lRnd];
-			let rt = this.grid[tRnd][rRnd];
-			let rb = this.grid[bRnd][rRnd];
-			let lb = this.grid[bRnd][lRnd];
-			
-			let lc = this.grid[Math.round(tRnd + ((bRnd - tRnd)/2))][lRnd];
-			let rc = this.grid[Math.round(tRnd + ((bRnd - tRnd)/2))][rRnd];
-		
-			/*
-			//console.log(this.grid);
-			console.log(this.player);
-			console.log(actorObj);
-			console.log('pos:', vectorPos, 'size:', vectorSize);
-			
-			console.log('top raw:', tRaw, 'top rnd:', tRnd); 
-			console.log('left raw:', lRaw, 'left rnd:', lRnd);
-			console.log('bottom raw:', bRaw, 'bottom rnd:', bRnd);
-			console.log('right raw:', rRaw, 'right rnd:', rRnd);
-			
-			//console.log('left center:', tRnd + ((bRnd - tRnd)/2));
-			//console.log('left center:', tRnd + ((bRnd - tRnd)/2));
-			
-			console.log('grid: left-top:', lt);
-			console.log('grid: right-top:', rt);			
-			console.log('grid: right-bottom:', rb);
-			console.log('grid: left-bottom:', lb);
-			
-			console.log('grid left center:', lc);
-			console.log('grid left center:', rc);
-			*/
+			let lc = this.grid[Math.round(tRnd + ((bRnd - tRnd)/2))][lRnd];  // левая сторона центр
+			let rc = this.grid[Math.round(tRnd + ((bRnd - tRnd)/2))][rRnd];  // правая сторона центр
 			
 			if (lt == 'lava' || rb == 'lava' || rt == 'lava' || lb == 'lava') {
-				return 'lava';
+				return 'lava';  // пересечение с лавой
 			}
 			else if(lt == 'wall' || rb == 'wall' || rt == 'wall' || lb == 'wall' || lc == 'wall' || rc == 'wall') {
-				return 'wall';
+				return 'wall';  // пересечение со стеной
 			}
 			else {
 				return undefined
@@ -243,7 +215,7 @@ class Level {
 			// проверка остались ли еще монеты
 			if(this.noMoreActors(actorType)) {
 				// все мнеты собраны - уровень пройден
-				this.status = 'won'; // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+				this.status = 'won';
 			}
 		}
 	}		
@@ -437,83 +409,8 @@ class Player extends Actor {
 		Object.defineProperty(this, 'type', {writable: true});
 	}
 }
-/*
-//bottom wall
-const grid = [
-  Array(4),
-  Array(4),
-  Array(4),
-  Array(4).fill('wall')
-];
-const level = new Level(grid);
-const position = new Vector(2.1, 1.5);
-const size = new Vector(0.8, 1.5);
-const nothing = level.obstacleAt(position, size);
 
-/*
-// right wall
-const grid = [
-  Array(4),
-  ['wall', undefined, undefined, undefined],
-  Array(4),
-  Array(4)
-];
-const level = new Level(grid);
-const position = new Vector(1, 1.5);
-const size = new Vector(0.8, 1.5);
-const nothing = level.obstacleAt(position, size);
-
-// left wall
-const grid = [
-  Array(4),
-  [undefined, undefined, 'wall', undefined],
-  Array(4),
-  Array(4)
-];
-const level = new Level(grid);
-const position = new Vector(1.2, 1.5);
-const size = new Vector(0.8, 1.5);
-const nothing = level.obstacleAt(position, size);
-*/
-
-/*
-const schema = [
-  '         ',
-  '         ',
-  'xx @xxxxx',
-  '         ',
-  '       ! ',
-  '    x    ',
-  'xxxxxxxxx',
-  '         '
-];
-const actorDict = {
-  '@': Player
-}
-const parser = new LevelParser(actorDict);
-const level = parser.parse(schema);
-runLevel(level, DOMDisplay);
-
-
-
-/*
-const schemas = [
-	[
-    '           !',
-	'     x      ',
-    '  xxxxxxx   ',
-	'            ',
-    '            ',
-    'xxxxxxxxx xx',
-    '            ',
-	'            ', 
-    '  @         ',
-    'xxxxxx xxxxx',
-    'xxx         '
-	]
-  ];
-*/
-
+// уровни игры
 const schemas = [
   [
     '            ',
@@ -550,7 +447,7 @@ const schemas = [
   ]
 ];
 
-
+// словарь обьектов
 const actorDict = {
   '@': Player,
   'v': FireRain,
@@ -558,7 +455,10 @@ const actorDict = {
   '|': VerticalFireball,
   'o': Coin
 }
+
+// создание игрового мира
 const parser = new LevelParser(actorDict);
+
+// запуск игры
 runGame(schemas, parser, DOMDisplay)
   .then(() => console.log('Вы выиграли приз!'));
-//*/
