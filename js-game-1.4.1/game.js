@@ -150,11 +150,7 @@ class Level {
 			else if(leftTop == 'wall' || rightBottom == 'wall' || rightTop == 'wall' || leftBottom == 'wall' || leftCenter == 'wall' || rightCenter == 'wall') {
 				return 'wall';
 			}
-			else {
-				return undefined;
-			}
 		}
-		
 	}
 	
 	removeActor(actorObj) {
