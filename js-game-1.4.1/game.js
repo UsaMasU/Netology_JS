@@ -19,6 +19,7 @@ class Vector {
   }
 }
 
+
 class Actor {
   constructor(pos = new Vector(0, 0), size =  new Vector(1, 1), speed = new Vector(0, 0), type = 'actor') {	
     if (!(pos instanceof Vector) || !(size instanceof Vector) || !(speed instanceof Vector)) {
@@ -128,11 +129,13 @@ class Level {
       let left = Math.floor(actorObj.left + 0.01);  
       let top = Math.ceil(actorObj.top - 0.8);  
       let right = Math.floor(actorObj.right - 0.01);  
-      let bottom = Math.floor(actorObj.bottom - 0.01);  
+      let bottom = Math.floor(actorObj.bottom - 0.01);
+      
       let leftTop = this.grid[top][left];  
       let rightTop = this.grid[top][right];  
       let rightBottom = this.grid[bottom][right];  
       let leftBottom = this.grid[bottom][left];  
+      
       let leftCenter = this.grid[Math.round(top + ((bottom - top)/2))][left];  // левая сторона центр
       let rightCenter = this.grid[Math.round(top + ((bottom - top)/2))][right];  // правая сторона центр
 
@@ -190,8 +193,6 @@ class LevelParser {
     return this.actorsDict[actorSymbol];
   }
 
-	
-
   obstacleFromSymbol(obstacleSymbol) {
     if(obstacleSymbol == 'x') {
       return 'wall';
@@ -223,9 +224,9 @@ class LevelParser {
     for(let y in planLevel) { 	
       for(let x = 0; x < planLevel[y].length; x++) { 
         let actorObjGrid;	
-	let actorObj = this.actorFromSymbol(planLevel[y][x]);				
-	if((typeof actorObj) != 'function') {
-	  continue;
+	       let actorObj = this.actorFromSymbol(planLevel[y][x]);				
+	       if((typeof actorObj) != 'function') {
+	        continue;
         } 
         actorObjGrid = new actorObj(new Vector(parseInt(x), parseInt(y))); 				
         if(!(actorObjGrid instanceof Actor)) {
@@ -267,6 +268,7 @@ class Fireball extends Actor {
   }
 }
 
+
 class HorizontalFireball extends Fireball {
   constructor(pos = 0, speed = 0) {
     super(pos? pos: new Vector(), speed? speed: new Vector(2,0), new Vector(1,1));
@@ -275,7 +277,6 @@ class HorizontalFireball extends Fireball {
   getNextPosition(time = 2) {
     return new Vector(this.pos.x + (this.speed.x * time), this.pos.y);
   }
-
 }
 
 
