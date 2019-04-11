@@ -3,7 +3,7 @@
 class Vector {
   constructor(left = 0, top = 0) {
 		this.x = left;
-    this.y = top;
+		this.y = top;
   }
 
   plus(vectorObj) {
@@ -120,7 +120,6 @@ class Level {
 		// создание временного обьекта из переданных векторов 	
 		let actorObj = new Actor(vectorPos, vectorSize, new Vector());
 		
-
 		if(actorObj.bottom > this.height) {
 			return 'lava';
 		}
