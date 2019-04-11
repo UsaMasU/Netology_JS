@@ -9,9 +9,9 @@ class Vector {
   plus(vectorObj) {
 		if (!(vectorObj instanceof Vector)) {
 			throw new Error("Можно прибавлять к вектору только вектор типа Vector");
-    } 
+		} 
 		return new Vector(vectorObj.x + this.x, vectorObj.y + this.y)
-   }
+  }
 	
 	times(mul) {
 		return new Vector(this.x * mul, this.y * mul)
@@ -22,7 +22,7 @@ class Actor {
 	constructor(pos = new Vector(0, 0), size =  new Vector(1, 1), speed = new Vector(0, 0), type = 'actor') {	
 		if (!(pos instanceof Vector) || !(size instanceof Vector) || !(speed instanceof Vector)) {
 			throw new Error("Нужно передавать только обьект типа Vector");
-    }	
+		}	
 		this.pos = pos;
 		this.size = size;
 		this.speed = speed;
@@ -67,8 +67,7 @@ class Actor {
 		else {
 			return false;
 		}
-	}	
-	
+	}		
 }
 
 class Level {
@@ -128,8 +127,7 @@ class Level {
 			return 'wall';
 		}
 		
-		if(this.status != 'lost') {
-			
+		if(this.status != 'lost') {	
 			let left = Math.floor(actorObj.left + 0.01);  
 			let top = Math.ceil(actorObj.top - 0.8);  
 			let right = Math.floor(actorObj.right - 0.01);  
@@ -255,7 +253,6 @@ class Fireball extends Actor {
 	}
 	
 	getNextPosition(time = 1) {
-
 		return new Vector(this.pos.x + (this.speed.x * time), this.pos.y + (this.speed.y * time));
 	}
 	
@@ -265,7 +262,6 @@ class Fireball extends Actor {
 	
 	act(time, level) {
 		let newPos = this.getNextPosition(time);
-
 		if(level.obstacleAt(newPos, this.size) == undefined) {
 			this.pos = newPos;
 		} 
@@ -346,17 +342,17 @@ class Player extends Actor {
 
 const schemas = [
   [
-    '            ',
-	'=       o   ',
-    ' o    xxx!  ',
-	' |        v ',
-    '      o     ',
-    '      xxx   ',
-    ' xx x       ',
-	'            ', 
-    '  @     x  o',
-    'xxxxxx xxxxx',
-    '            '
+		'            ',
+		'=       o   ',
+		' o    xxx!  ',
+		' |        v ',
+		'      o     ',
+		'      xxx   ',
+		' xx x       ',
+		'            ', 
+		'  @     x  o',
+		'xxxxxx xxxxx',
+		'            '
   ],
   [
     '      v    |',
