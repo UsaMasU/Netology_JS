@@ -339,7 +339,7 @@ class Player extends Actor {
 	}
 }
 
-
+// игровые уровни
 const schemas = [
 	[
 		'            ',
