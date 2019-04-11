@@ -8,7 +8,7 @@ class Vector {
 
   plus(vectorObj) {
     if (!(vectorObj instanceof Vector)) {
-      throw new Error("Ìîæíî ïðèáàâëÿòü ê âåêòîðó òîëüêî âåêòîð òèïà Vector");
+      throw new Error("ÐœÐ¾Ð¶Ð½Ð¾ Ð¿Ñ€Ð¸Ð±Ð°Ð²Ð»ÑÑ‚ÑŒ Ðº Ð²ÐµÐºÑ‚Ð¾Ñ€Ñƒ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð²ÐµÐºÑ‚Ð¾Ñ€ Ñ‚Ð¸Ð¿Ð° Vector");
     } 
     return new Vector(vectorObj.x + this.x, vectorObj.y + this.y)
   }
@@ -22,7 +22,7 @@ class Vector {
 class Actor {
   constructor(pos = new Vector(0, 0), size =  new Vector(1, 1), speed = new Vector(0, 0), type = 'actor') {	
     if (!(pos instanceof Vector) || !(size instanceof Vector) || !(speed instanceof Vector)) {
-      throw new Error("Íóæíî ïåðåäàâàòü òîëüêî îáüåêò òèïà Vector");
+      throw new Error("ÐÑƒÐ¶Ð½Ð¾ Ð¿ÐµÑ€ÐµÐ´Ð°Ð²Ð°Ñ‚ÑŒ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð¾Ð±ÑŒÐµÐºÑ‚ Ñ‚Ð¸Ð¿Ð° Vector");
     }	
     this.pos = pos;
     this.size = size;
@@ -52,15 +52,15 @@ class Actor {
 
   isIntersect(actorObj) {
     if(!(actorObj instanceof Actor)) {
-      throw new Error("Íóæíî ïåðåäàâàòü òîëüêî îáüåêò òèïà Actor");
+      throw new Error("ÐÑƒÐ¶Ð½Ð¾ Ð¿ÐµÑ€ÐµÐ´Ð°Ð²Ð°Ñ‚ÑŒ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð¾Ð±ÑŒÐµÐºÑ‚ Ñ‚Ð¸Ð¿Ð° Actor");
     }
 
-    // ïðîâåðêà ïåðåñå÷åíèÿ ñ ñàìèì ñîáîé
+    // Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð¿ÐµÑ€ÐµÑÐµÑ‡ÐµÐ½Ð¸Ñ Ñ ÑÐ°Ð¼Ð¸Ð¼ ÑÐ¾Ð±Ð¾Ð¹
     if (actorObj == this) {
       return false;
     }
 
-    // ïåðåñå÷åíèÿ îáüåêòîâ (ñìåæíûå ãðàíèöû íå ÿâëÿþòñÿ ïåðåñå÷åíèåì)
+    // Ð¿ÐµÑ€ÐµÑÐµÑ‡ÐµÐ½Ð¸Ñ Ð¾Ð±ÑŒÐµÐºÑ‚Ð¾Ð² (ÑÐ¼ÐµÐ¶Ð½Ñ‹Ðµ Ð³Ñ€Ð°Ð½Ð¸Ñ†Ñ‹ Ð½Ðµ ÑÐ²Ð»ÑÑŽÑ‚ÑÑ Ð¿ÐµÑ€ÐµÑÐµÑ‡ÐµÐ½Ð¸ÐµÐ¼)
     if(!(this.top + 0.1 > actorObj.bottom || this.bottom - 0.1 < actorObj.top || this.right - 0.1 < actorObj.left || this.left + 0.1 > actorObj.right)) {
       return true;
     }
@@ -99,10 +99,10 @@ class Level {
   
   actorAt(actorObj) {
     if(!(actorObj instanceof Actor)) {
-      throw new Error("Íóæíî ïåðåäàâàòü òîëüêî îáüåêò òèïà Actor");
+      throw new Error("ÐÑƒÐ¶Ð½Ð¾ Ð¿ÐµÑ€ÐµÐ´Ð°Ð²Ð°Ñ‚ÑŒ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð¾Ð±ÑŒÐµÐºÑ‚ Ñ‚Ð¸Ð¿Ð° Actor");
     }
 
-    // ïðîâåðêà ïåðåñå÷åíèé ñ îáüåêòàìè
+    // Ð¿Ñ€Ð¾Ð²ÐµÑ€ÐºÐ° Ð¿ÐµÑ€ÐµÑÐµÑ‡ÐµÐ½Ð¸Ð¹ Ñ Ð¾Ð±ÑŒÐµÐºÑ‚Ð°Ð¼Ð¸
     for(let actor in this.actors) {
       if(actorObj.isIntersect(this.actors[actor])) {
         return this.actors[actor]
@@ -112,10 +112,10 @@ class Level {
 
   obstacleAt(vectorPos, vectorSize) {
     if (!(vectorPos instanceof Vector) || !(vectorSize instanceof Vector)) {
-      throw new Error("Íóæíî ïåðåäàâàòü òîëüêî îáüåêò òèïà Vector");
+      throw new Error("ÐÑƒÐ¶Ð½Ð¾ Ð¿ÐµÑ€ÐµÐ´Ð°Ð²Ð°Ñ‚ÑŒ Ñ‚Ð¾Ð»ÑŒÐºÐ¾ Ð¾Ð±ÑŒÐµÐºÑ‚ Ñ‚Ð¸Ð¿Ð° Vector");
     }
 
-    // ñîçäàíèå âðåìåííîãî îáüåêòà èç ïåðåäàííûõ âåêòîðîâ 	
+    // ÑÐ¾Ð·Ð´Ð°Ð½Ð¸Ðµ Ð²Ñ€ÐµÐ¼ÐµÐ½Ð½Ð¾Ð³Ð¾ Ð¾Ð±ÑŒÐµÐºÑ‚Ð° Ð¸Ð· Ð¿ÐµÑ€ÐµÐ´Ð°Ð½Ð½Ñ‹Ñ… Ð²ÐµÐºÑ‚Ð¾Ñ€Ð¾Ð² 	
     let actorObj = new Actor(vectorPos, vectorSize, new Vector());
     if(actorObj.bottom > this.height) {
       return 'lava';
@@ -133,8 +133,8 @@ class Level {
       let rightTop = this.grid[top][right];  
       let rightBottom = this.grid[bottom][right];  
       let leftBottom = this.grid[bottom][left];  
-      let leftCenter = this.grid[Math.round(top + ((bottom - top)/2))][left];  // ëåâàÿ ñòîðîíà öåíòð
-      let rightCenter = this.grid[Math.round(top + ((bottom - top)/2))][right];  // ïðàâàÿ ñòîðîíà öåíòð
+      let leftCenter = this.grid[Math.round(top + ((bottom - top)/2))][left];  // Ð»ÐµÐ²Ð°Ñ ÑÑ‚Ð¾Ñ€Ð¾Ð½Ð° Ñ†ÐµÐ½Ñ‚Ñ€
+      let rightCenter = this.grid[Math.round(top + ((bottom - top)/2))][right];  // Ð¿Ñ€Ð°Ð²Ð°Ñ ÑÑ‚Ð¾Ñ€Ð¾Ð½Ð° Ñ†ÐµÐ½Ñ‚Ñ€
 
       if (leftTop == 'lava' || rightBottom == 'lava' || rightTop == 'lava' || leftBottom == 'lava') {
         return 'lava'; 
@@ -341,7 +341,7 @@ class Player extends Actor {
 }
 
 
-// èãðîâûå óðîâíè
+// Ð¸Ð³Ñ€Ð¾Ð²Ñ‹Ðµ ÑƒÑ€Ð¾Ð²Ð½Ð¸
 const schemas = [
   [
     '            ',
@@ -390,4 +390,4 @@ const actorDict = {
 
 const parser = new LevelParser(actorDict);
 runGame(schemas, parser, DOMDisplay)
-  .then(() => console.log('Âû âûèãðàëè ïðèç!'));
+  .then(() => console.log('Ð’Ñ‹ Ð²Ñ‹Ð¸Ð³Ñ€Ð°Ð»Ð¸ Ð¿Ñ€Ð¸Ð·!'));
