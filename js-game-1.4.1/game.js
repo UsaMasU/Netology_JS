@@ -83,6 +83,7 @@ class Level {
     for(let actor in this.actors) {
       if(this.actors[actor].type == 'player') {
         this.player = this.actors[actor];
+        Object.defineProperty(this.player, 'type', {value: 'player'});
       }
     }
     
@@ -160,8 +161,15 @@ class Level {
     this.actors.splice(actorRem, 1);
   }
 
-  noMoreActors(vectorType) {
-    return !(this.actors.some(checkActor => checkActor.type == vectorType))
+  noMoreActors(vectorType) {  
+    if(!(vectorType)){
+      return true;
+    }
+    
+    if(!(this.actors.some(checkActor => checkActor.type == vectorType))) {
+      return false;
+    }
+    return true;
   }
 
   playerTouched(actorType, actorObj = 0) {
@@ -175,7 +183,7 @@ class Level {
 
     if(actorType == 'coin') {
       this.removeActor(actorObj);
-      if(this.noMoreActors(actorType)) {
+      if(!(this.noMoreActors(actorType))) {
         this.status = 'won';
       }
     }
