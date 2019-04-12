@@ -83,7 +83,6 @@ class Level {
     for(let actor in this.actors) {
       if(this.actors[actor].type == 'player') {
         this.player = this.actors[actor];
-        Object.defineProperty(this.player, 'type', {value: 'player'});
       }
     }
     
