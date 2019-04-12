@@ -25,6 +25,7 @@ class Actor {
     if (!(pos instanceof Vector) || !(size instanceof Vector) || !(speed instanceof Vector)) {
       throw new Error("Нужно передавать только обьект типа Vector");
     }	
+    this.title;
     this.pos = pos;
     this.size = size;
     this.speed = speed;
@@ -308,12 +309,12 @@ class FireRain extends Fireball {
 
 
 class Coin extends Actor {
-  constructor(pos) {
+  constructor(pos = new Vector()) {
     super(pos.plus(new Vector(0.2, 0.1)), new Vector(0.6, 0.6), new Vector(0,0), 'coin');
-      this.posBase = this.pos;
-      this.springSpeed = 8; 
-      this.springDist = 0.07; 
-      this.spring = Math.random() * (2 * Math.PI); 
+    this.posBase = this.pos;
+    this.springSpeed = 8; 
+    this.springDist = 0.07; 
+    this.spring = Math.random() * (2 * Math.PI);
   }
 
   updateSpring(time = 1){
@@ -336,7 +337,7 @@ class Coin extends Actor {
 
 
 class Player extends Actor {
-  constructor(pos) {
+  constructor(pos = new Vector()) {
     super(pos.plus(new Vector(0.0, -0.5)), new Vector(0.8, 1.5), new Vector(0,0), 'player');
   }
 }
