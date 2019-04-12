@@ -21,7 +21,7 @@ class Vector {
 
 
 class Actor {
-  constructor(pos = new Vector(0, 0), size =  new Vector(1, 1), speed = new Vector(0, 0), type = 'actor') {	
+  constructor(pos = new Vector(0, 0), size =  new Vector(1, 1), speed = new Vector(0, 0)) {	
     if (!(pos instanceof Vector) || !(size instanceof Vector) || !(speed instanceof Vector)) {
       throw new Error("Нужно передавать только обьект типа Vector");
     }	
@@ -29,8 +29,11 @@ class Actor {
     this.pos = pos;
     this.size = size;
     this.speed = speed;
-    this.type = type;
-    Object.defineProperty(this, 'type', {writable: false});
+    
+    Object.defineProperty(this, 'type', {
+     value: 'actor',
+     configurable: true
+    });
   }
 
   get left() {
@@ -247,7 +250,8 @@ class LevelParser {
 
 class Fireball extends Actor {
   constructor(pos = 0, speed = 0) {
-    super(pos? pos: new Vector(), new Vector(1,1), speed? speed: new Vector(1,0), 'fireball');
+    super(pos? pos: new Vector(), new Vector(1,1), speed? speed: new Vector(1,0));
+    Object.defineProperty(this, 'type', {value: 'fireball'});
   }
 
   getNextPosition(time = 1) {
@@ -310,7 +314,8 @@ class FireRain extends Fireball {
 
 class Coin extends Actor {
   constructor(pos = new Vector()) {
-    super(pos.plus(new Vector(0.2, 0.1)), new Vector(0.6, 0.6), new Vector(0,0), 'coin');
+    super(pos.plus(new Vector(0.2, 0.1)), new Vector(0.6, 0.6), new Vector(0,0));
+    Object.defineProperty(this, 'type', {value: 'coin'});
     this.posBase = this.pos;
     this.springSpeed = 8; 
     this.springDist = 0.07; 
@@ -338,7 +343,9 @@ class Coin extends Actor {
 
 class Player extends Actor {
   constructor(pos = new Vector()) {
-    super(pos.plus(new Vector(0.0, -0.5)), new Vector(0.8, 1.5), new Vector(0,0), 'player');
+    super(pos.plus(new Vector(0.0, -0.5)), new Vector(0.8, 1.5), new Vector(0,0));
+    Object.defineProperty(this, 'type', {value: 'player'});
+
   }
 }
 
