@@ -29,13 +29,12 @@ class Actor {
     this.pos = pos;
     this.size = size;
     this.speed = speed;
-    
-    Object.defineProperty(this, 'type', {
-     value: 'actor',
-     configurable: true
-    });
   }
-
+  
+  get type() {
+    return 'actor';
+  }
+  
   get left() {
     return this.pos.x;
   }  
@@ -161,14 +160,15 @@ class Level {
     this.actors.splice(actorRem, 1);
   }
 
-  noMoreActors(vectorType) {  
-    if(!(vectorType)){
+  noMoreActors(vectorType) {     
+    if(vectorType == null){
       return true;
     }
     
-    if(!(this.actors.some(checkActor => checkActor.type == vectorType))) {
+    if((this.actors.some(checkActor => checkActor.type == vectorType))) {
       return false;
     }
+     
     return true;
   }
 
@@ -183,7 +183,7 @@ class Level {
 
     if(actorType == 'coin') {
       this.removeActor(actorObj);
-      if(!(this.noMoreActors(actorType))) {
+      if((this.noMoreActors(actorType))) {
         this.status = 'won';
       }
     }
