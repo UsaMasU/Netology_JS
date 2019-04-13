@@ -80,12 +80,13 @@ class Level {
   constructor(grid = 0, actors = 0) {
     this.grid = grid;
     this.actors = actors;
+
     for(let actor in this.actors) {
       if(this.actors[actor].type == 'player') {
         this.player = this.actors[actor];
       }
     }
-    
+   
     this.grid.length ? this.height = this.grid.length : this.height = 0;
     this.width = 0;
     for(let x in this.grid) {
@@ -211,7 +212,6 @@ class LevelParser {
     if(obstacleSymbol == '!') {
       return 'lava';
     }
-    return undefined;
   }
 
   createGrid(planLevel) {
@@ -352,7 +352,6 @@ class Player extends Actor {
   constructor(pos = new Vector()) {
     super(pos.plus(new Vector(0.0, -0.5)), new Vector(0.8, 1.5), new Vector(0,0));
     Object.defineProperty(this, 'type', {value: 'player'});
-
   }
 }
 
