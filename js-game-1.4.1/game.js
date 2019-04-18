@@ -65,12 +65,7 @@ class Actor {
     }
 
     // пересечения обьектов (смежные границы не являются пересечением)
-    if(!(this.top + 0.1 > actorObj.bottom || this.bottom - 0.1 < actorObj.top || this.right - 0.1 < actorObj.left || this.left + 0.1 > actorObj.right)) {
-      return true;
-    }
-    else {
-      return false;
-    }
+    return !(this.top + 0.1 > actorObj.bottom || this.bottom - 0.1 < actorObj.top || this.right - 0.1 < actorObj.left || this.left + 0.1 > actorObj.right)
   }		
 }
 
@@ -256,8 +251,8 @@ class LevelParser {
 
 
 class Fireball extends Actor {
-  constructor(pos = 0, speed = 0) {
-    super(pos? pos: new Vector(), new Vector(1,1), speed? speed: new Vector(1,0));
+  constructor(pos, speed = new Vector(1,0), size) {
+    super(pos, size, speed);
     Object.defineProperty(this, 'type', {value: 'fireball'});
   }
 
@@ -282,10 +277,10 @@ class Fireball extends Actor {
 
 
 class HorizontalFireball extends Fireball {
-  constructor(pos = 0, speed = 0) {
-    super(pos? pos: new Vector(), speed? speed: new Vector(2,0), new Vector(1,1));
+  constructor(pos, speed = new Vector(2,0)) {
+    super(pos, speed);
   }
-
+ 
   getNextPosition(time = 2) {
     return new Vector(this.pos.x + (this.speed.x * time), this.pos.y);
   }
@@ -293,8 +288,8 @@ class HorizontalFireball extends Fireball {
 
 
 class VerticalFireball extends Fireball {
-  constructor(pos = 0, speed = 0) {
-    super(pos? pos: new Vector(), speed? speed: new Vector(0,2), new Vector(1, 1));
+  constructor(pos, speed = new Vector(0,2)) {
+    super(pos, speed);
   }
 
   getNextPosition(time = 2) {
@@ -304,8 +299,8 @@ class VerticalFireball extends Fireball {
 
 
 class FireRain extends Fireball {
-  constructor(pos = 0, speed = 0) {
-    super(pos? pos: new Vector(), speed? speed: new Vector(0,3), new Vector(1, 1));
+  constructor(pos, speed = new Vector(0,3)) {
+    super(pos, speed);
       this.posSave = this.pos;
   }
 
@@ -320,8 +315,9 @@ class FireRain extends Fireball {
 
 
 class Coin extends Actor {
-  constructor(pos = new Vector()) {
-    super(pos.plus(new Vector(0.2, 0.1)), new Vector(0.6, 0.6), new Vector(0,0));
+  constructor(pos = new Vector(), speed, size = new Vector(0.6, 0.6)) {
+    super(pos.plus(new Vector(0.2, 0.1)), size);
+  
     Object.defineProperty(this, 'type', {value: 'coin'});
     this.posBase = this.pos;
     this.springSpeed = 8; 
@@ -349,8 +345,8 @@ class Coin extends Actor {
 
 
 class Player extends Actor {
-  constructor(pos = new Vector()) {
-    super(pos.plus(new Vector(0.0, -0.5)), new Vector(0.8, 1.5), new Vector(0,0));
+  constructor(pos = new Vector(), speed, size = new Vector(0.8, 1.5)) {
+    super(pos.plus(new Vector(0.0, -0.5)), size);
     Object.defineProperty(this, 'type', {value: 'player'});
   }
 }
