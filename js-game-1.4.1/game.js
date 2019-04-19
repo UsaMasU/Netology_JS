@@ -75,12 +75,13 @@ class Level {
     this.grid = grid;
     this.actors = actors;
 
-    for(let actor in this.actors) {
-      if(this.actors[actor].type == 'player') {
-        this.player = this.actors[actor];
-      }
+    try{
+      this._player = this.actors.find(checkActor => checkActor.type == 'player');
     }
-   
+    catch(err) {
+      console.log(err);   
+    }
+    
     this.grid.length ? this.height = this.grid.length : this.height = 0;
     this.width = 0;
     for(let x in this.grid) {
@@ -88,9 +89,12 @@ class Level {
         this.width = this.grid[x].length;
       }
     }
-
     this.status = null;
     this.finishDelay = 1;
+  }
+  
+  get player() {
+    return this._player;
   }
 
   isFinished() {
@@ -103,10 +107,11 @@ class Level {
     }
 
     // проверка пересечений с обьектами
-    for(let actor in this.actors) {
-      if(actorObj.isIntersect(this.actors[actor])) {
-        return this.actors[actor]
-      }
+    try {
+      return this.actors.find(checkActor => checkActor.isIntersect(actorObj));
+    }
+    catch(err) {
+      console.log('нет обьектов на уровне');
     }
   }
 
@@ -150,7 +155,7 @@ class Level {
   removeActor(actorObj) {
     let actorRem = this.actors.indexOf(actorObj);
     if(actorRem == -1) {
-      return false;
+      return;
     }
     this.actors.splice(actorRem, 1);
   }
@@ -159,17 +164,12 @@ class Level {
     if(vectorType == null){
       return true;
     }
-    
-    if((this.actors.some(checkActor => checkActor.type == vectorType))) {
-      return false;
-    }
-     
-    return true;
+    return !(this.actors.some(checkActor => checkActor.type == vectorType))
   }
 
   playerTouched(actorType, actorObj = 0) {
     if(this.status != null) {
-      return
+      return;
     }		
 
     if(actorType == 'lava' || actorType == 'fireball') {
@@ -195,7 +195,7 @@ class LevelParser {
 
   actorFromSymbol(actorSymbol) {
     if(!actorSymbol) {
-      return undefined;
+      return;
     }
     return this.actorsDict[actorSymbol];
   }
@@ -224,7 +224,7 @@ class LevelParser {
   createActors(planLevel) {
     let actors = []; 
     if(!this.actorsDict) {
-      return actors
+      return actors;
     }
     
     for(let y in planLevel) { 	
